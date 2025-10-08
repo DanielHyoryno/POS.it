@@ -16,7 +16,6 @@ class ProductSeeder extends Seeder
         $milk   = Item::where('name','Milk')->first();
         $bread  = Item::where('name','Bread Loaf')->first();
 
-        // Simple: Milk 200ml (sells raw material unit)
         Product::firstOrCreate(
             ['name' => 'Milk 200ml'],
             [
@@ -31,7 +30,6 @@ class ProductSeeder extends Seeder
             ]
         );
 
-        // Simple: Bread Loaf (per pcs)
         Product::firstOrCreate(
             ['name' => 'Bread Loaf'],
             [
@@ -46,7 +44,6 @@ class ProductSeeder extends Seeder
             ]
         );
 
-        // Composite: Gym Rat Drink
         Product::firstOrCreate(
             ['name' => 'Gym Rat Drink'],
             [
@@ -59,7 +56,6 @@ class ProductSeeder extends Seeder
             ]
         );
 
-        // Composite: Choco Banana Toast
         Product::firstOrCreate(
             ['name' => 'Choco Banana Toast'],
             [

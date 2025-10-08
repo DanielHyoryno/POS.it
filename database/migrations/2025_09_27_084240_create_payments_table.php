@@ -9,7 +9,7 @@ return new class extends Migration {
         Schema::create('payments', function (Blueprint $t) {
             $t->id();
             $t->foreignId('sale_id')->constrained('sales')->cascadeOnDelete();
-            $t->string('method'); // cash/card/qris
+            $t->string('method');
             $t->decimal('amount', 12, 2);
             $t->string('notes')->nullable();
             $t->timestamps();

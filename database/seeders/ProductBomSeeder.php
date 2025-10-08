@@ -19,7 +19,6 @@ class ProductBomSeeder extends Seeder
         $toast  = Product::where('name','Choco Banana Toast')->first();
 
         if ($gymRat) {
-            // wipe then insert to avoid dupes when reseeding
             $gymRat->bomLines()->delete();
 
             ProductBomLine::create(['product_id'=>$gymRat->id, 'item_id'=>$milk?->id,   'qty'=>200]);

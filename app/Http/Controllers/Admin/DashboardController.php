@@ -12,7 +12,6 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        // Phase 1 stats
         $totalItems    = Item::count();
         $activeItems   = Item::where('is_active', true)->count();
         $lowStockCount = Item::whereColumn('current_qty', '<=', 'low_stock_threshold')->count();
@@ -25,7 +24,6 @@ class DashboardController extends Controller
         $recentMovements = InventoryMovement::with('item:id,name,base_unit')
             ->latest()->take(10)->get();
 
-        // Phase 2 stats — Products & BOM
         $totalProducts   = Product::count();
         $activeProducts  = Product::where('is_active', true)->count();
         $simpleCount     = Product::where('type','simple')->count();
@@ -39,7 +37,6 @@ class DashboardController extends Controller
             ->whereHas('linkedItem', fn($q) => $q->where('is_active', false))
             ->count();
 
-        // Products missing costing inputs
         $productsNeedingCostData = Product::query()
             ->where(function($q) {
                 $q->where(function($q) {
@@ -90,18 +87,16 @@ class DashboardController extends Controller
         ));
     }
 
-    // ==== Sales + Expenses series for the dashboard chart ====
     public function salesSeries(Request $request)
     {
-        $range  = $request->query('range', '1w');      // 1d,1w,1m,1y
-        $status = $request->query('status');           // optional: 'paid','draft'
+        $range  = $request->query('range', '1w');      
+        $status = $request->query('status');           
         $debug  = (bool)$request->query('debug', false);
 
         abort_unless(in_array($range, ['1d','1w','1m','1y']), 400, 'Invalid range');
 
-        $now = now(); // app timezone (e.g., Asia/Jakarta)
+        $now = now();
 
-        // Build period + label formatter
         switch ($range) {
             case '1d':
                 $start = $now->copy()->startOfDay();
@@ -130,23 +125,18 @@ class DashboardController extends Controller
                 break;
         }
 
-        // If your DB stores timestamps in UTC (default), convert the window to UTC for querying:
         $startUtc = $start->copy()->utc();
         $nowUtc   = $now->copy()->utc();
 
-        // ---- SALES (revenue/orders) ----
         $q = Sale::query()->whereBetween('created_at', [$startUtc, $nowUtc]);
         if ($status) $q->where('status', $status); else $q->where('status','!=','void');
         $sales = $q->get(['id','total','status','created_at']);
 
-        // ---- EXPENSES (from purchases in inventory_movements) ----
-        // Assumes: InventoryMovement has an item() relation and 'reason' == 'purchase' for restocks.
         $purchases = InventoryMovement::with('item:id,cost_price')
             ->where('reason','purchase')
             ->whereBetween('created_at', [$startUtc, $nowUtc])
             ->get(['id','item_id','change_qty','created_at']);
 
-        // Seed buckets
         $buckets = [];
         foreach ($period as $tick) {
             $key = match ($step) {
@@ -157,7 +147,6 @@ class DashboardController extends Controller
             $buckets[$key] = ['revenue'=>0.0, 'orders'=>0, 'expenses'=>0.0, 'label'=>$label($tick)];
         }
 
-        // Fill revenue + orders
         foreach ($sales as $s) {
             $t = Carbon::parse($s->created_at);
             $key = match ($step) {
@@ -171,7 +160,6 @@ class DashboardController extends Controller
             }
         }
 
-        // Fill expenses (qty * cost_price)
         foreach ($purchases as $p) {
             $t = Carbon::parse($p->created_at);
             $key = match ($step) {
@@ -185,7 +173,6 @@ class DashboardController extends Controller
             }
         }
 
-        // Build arrays
         $labels=[]; $revenue=[]; $orders=[]; $expenses=[]; $profit=[];
         foreach ($buckets as $row) {
             $labels[]   = $row['label'];
@@ -195,7 +182,6 @@ class DashboardController extends Controller
             $profit[]   = round($row['revenue'] - $row['expenses'], 2);
         }
 
-        // Optional debug info
         if ($debug) {
             return response()->json([
                 'labels'   => $labels,

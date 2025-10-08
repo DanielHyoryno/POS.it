@@ -48,7 +48,6 @@ class CheckoutController extends Controller
             ]);
 
             foreach ($cart['lines'] as $l) {
-                // create line
                 SaleItem::create([
                     'sale_id'    => $sale->id,
                     'product_id' => $l['product_id'],
@@ -58,20 +57,16 @@ class CheckoutController extends Controller
                     'total'      => ($l['price'] * $l['qty']) - ($l['discount'] ?? 0),
                 ]);
 
-                // load product with correct relations
                 $product = Product::with(['linkedItem', 'bomLines.item'])->findOrFail($l['product_id']);
 
                 if ($product->type === 'simple' && $product->linkedItem) {
-                    // use per_sale_qty multiplier for simple products
                     $needed = (float) ($product->per_sale_qty ?? 1) * (float) $l['qty'];
 
-                    // decrement stock
                     $product->linkedItem->decrement('current_qty', $needed);
 
-                    // movement with NEGATIVE change_qty
                     InventoryMovement::create([
                         'item_id'        => $product->linkedItem->id,
-                        'change_qty'     => -$needed, // 👈 negative
+                        'change_qty'     => -$needed,
                         'reason'         => 'sale',
                         'reference_type' => 'sale',
                         'reference_id'   => $sale->id,
@@ -79,17 +74,14 @@ class CheckoutController extends Controller
                     ]);
 
                 } else {
-                    // composite via BOM lines
                     foreach ($product->bomLines as $line) {
                         $consume = (float) $line->qty * (float) $l['qty'];
 
-                        // decrement each component
                         $line->item->decrement('current_qty', $consume);
 
-                        // movement with NEGATIVE change_qty
                         InventoryMovement::create([
                             'item_id'        => $line->item->id,
-                            'change_qty'     => -$consume, // 👈 negative
+                            'change_qty'     => -$consume,
                             'reason'         => 'sale',
                             'reference_type' => 'sale',
                             'reference_id'   => $sale->id,

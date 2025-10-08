@@ -61,7 +61,6 @@ class ItemLotSeeder extends Seeder
                     ]);
                 }
 
-                // keep items.current_qty in sync with sum(lots.qty)
                 $item->resyncStockFromLots();
             }
         });

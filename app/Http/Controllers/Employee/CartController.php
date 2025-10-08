@@ -7,15 +7,13 @@ use App\Models\Product;
 
 class CartController extends Controller
 {
-    /** Show cart */
     public function show()
     {
-        $cart   = $this->getCart(); // ['lines'=>[...]]
+        $cart   = $this->getCart(); 
         $totals = $this->totals($cart['lines']);
         return view('employee.sales.cart', compact('cart','totals'));
     }
 
-    /** Add product (qty defaults to 1) */
     public function add(Request $r)
     {
         $data = $r->validate([
@@ -25,7 +23,7 @@ class CartController extends Controller
         $qty = (float)($data['qty'] ?? 1);
 
         $p    = Product::findOrFail($data['product_id']);
-        $cart = $this->getCart(); // ['lines'=>[]]
+        $cart = $this->getCart(); 
 
         if (isset($cart['lines'][$p->id])) {
             $cart['lines'][$p->id]['qty'] = (float)$cart['lines'][$p->id]['qty'] + $qty;
@@ -98,47 +96,38 @@ class CartController extends Controller
         return redirect()->route('employee.sales.cart.show')->with('ok','Item removed');
     }
 
-    /** Clear cart */
     public function clear()
     {
         session()->forget('cart');
         return redirect()->route('employee.sales.cart.show')->with('ok','Cart cleared');
     }
 
-    /* ---------------- helpers ---------------- */
-
-    /** Always return shape: ['lines'=>[ product_id => line ]] */
+    // Helper (dibuat GPT)
     private function getCart(): array
     {
         $raw = session()->get('cart', []);
 
-        // If already in the correct shape:
         if (is_array($raw) && array_key_exists('lines', $raw) && is_array($raw['lines'])) {
             return $raw;
         }
 
-        // If it’s a Collection from an older version:
         if ($raw instanceof \Illuminate\Support\Collection) {
             $raw = $raw->toArray();
         }
 
-        // If it’s a flat list of lines (numeric array), re-key by product_id:
         if (isset($raw[0]) && is_array($raw[0]) && isset($raw[0]['product_id'])) {
             $raw = collect($raw)->keyBy('product_id')->toArray();
         }
 
-        // If it’s an associative array keyed by product_id already:
         if (is_array($raw) && !isset($raw['lines'])) {
-            return ['lines' => $raw]; // wrap into expected shape
+            return ['lines' => $raw]; 
         }
 
-        // Fallback
         return ['lines' => []];
     }
 
     private function putCart(array $cart): void
     {
-        // ensure correct shape
         if (!isset($cart['lines']) || !is_array($cart['lines'])) {
             $cart = ['lines' => []];
         }

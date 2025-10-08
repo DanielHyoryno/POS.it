@@ -366,7 +366,7 @@
     });
   });
 
-  load('1m'); // start wider so you actually see history
+  load('1m');
 })();
 </script>
 
@@ -398,7 +398,6 @@
       }
     } catch (e) {
       console.error(e);
-      // fail safe: hide button to avoid loops
       moreBtn.classList.add('d-none');
     } finally {
       loading.classList.add('d-none');
@@ -409,7 +408,6 @@
 
   moreBtn.addEventListener('click', fetchPage);
 
-  // initial page
   fetchPage();
 })();
 </script>

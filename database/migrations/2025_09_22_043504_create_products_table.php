@@ -14,9 +14,8 @@ return new class extends Migration {
             $t->decimal('selling_price', 12, 2)->default(0);
             $t->boolean('is_active')->default(true);
 
-            // simple product linkage
             $t->foreignId('linked_item_id')->nullable()->constrained('items')->nullOnDelete();
-            $t->decimal('per_sale_qty', 12, 3)->nullable(); // base unit of linked item
+            $t->decimal('per_sale_qty', 12, 3)->nullable(); 
 
             $t->timestamps();
         });

@@ -61,15 +61,14 @@ class SaleController extends Controller
         $cart = $this->cart($r);
         abort_if(empty($cart['lines']), 422, 'Cart empty');
 
-        // simple totals
         $subtotal = collect($cart['lines'])->sum(fn($l)=>$l['price']*$l['qty']);
-        $discount = 0; // hook coupons here
-        $tax      = 0; // or your VAT calc
+        $discount = 0;
+        $tax      = 0;
         $total    = $subtotal - $discount + $tax;
 
         $data = $r->validate([
             'paid'          => 'required|numeric|min:0',
-            'payment_method'=> 'nullable|string' // cash|card|qris
+            'payment_method'=> 'nullable|string' 
         ]);
         $paid   = (float)$data['paid'];
         $change = max(0, $paid - $total);
@@ -88,7 +87,7 @@ class SaleController extends Controller
             ]);
 
             foreach ($cart['lines'] as $l) {
-                $lineTotal = ($l['price'] * $l['qty']); // no per-line discount yet
+                $lineTotal = ($l['price'] * $l['qty']); 
                 SaleItem::create([
                     'sale_id'   => $sale->id,
                     'product_id'=> $l['product_id'],
@@ -98,13 +97,11 @@ class SaleController extends Controller
                     'total'     => $lineTotal,
                 ]);
 
-                // stock deduction
                 $product = Product::with(['item','bomComponents'])->find($l['product_id']);
                 if ($product->type === 'simple') {
-                    // decrement its linked item
                     if ($product->item_id) {
                         $item = $product->item;
-                        $consume = $l['qty']; // assume same base unit
+                        $consume = $l['qty']; 
                         $item->decrement('current_qty', $consume);
 
                         InventoryMovement::create([
@@ -116,9 +113,8 @@ class SaleController extends Controller
                         ]);
                     }
                 } else {
-                    // composite: consume BOM
                     foreach ($product->bomComponents as $comp) {
-                        $item = $comp; // Item model
+                        $item = $comp;
                         $consume = $comp->pivot->qty * $l['qty'];
                         $item->decrement('current_qty', $consume);
 
@@ -133,7 +129,6 @@ class SaleController extends Controller
                 }
             }
 
-            // payment line
             if ($paid > 0) {
                 Payment::create([
                     'sale_id' => $sale->id,
@@ -143,7 +138,6 @@ class SaleController extends Controller
                 ]);
             }
 
-            // clear cart
             $r->session()->forget('pos_cart');
 
             return $sale;

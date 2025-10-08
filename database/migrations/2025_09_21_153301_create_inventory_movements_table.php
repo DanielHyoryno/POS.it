@@ -15,8 +15,8 @@ return new class extends Migration
             $t->id();
             $t->foreignId('item_id')->constrained()->cascadeOnDelete();
             $t->decimal('change_qty', 12, 3)->default(0);
-            $t->enum('reason', ['restock','adjust','consume']);  // consume will be used in Phase 2
-            $t->nullableMorphs('reference');                     // e.g., Transaction later
+            $t->enum('reason', ['restock','adjust','consume']); 
+            $t->nullableMorphs('reference');                    
             $t->text('note')->nullable();
             $t->timestamps();
         });

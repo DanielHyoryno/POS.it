@@ -7,13 +7,12 @@ use Illuminate\Http\Request;
 use App\Support\Units;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Storage;
-use App\Models\ItemLot; // <-- add this
+use App\Models\ItemLot; 
 
 
 
 class ItemController extends Controller
 {
-    // LIST
     public function index(Request $r)
     {
         $items = Item::query()
@@ -23,7 +22,6 @@ class ItemController extends Controller
         return view('admin/items/index', compact('items'));
     }
 
-    // CREATE
     public function create()
     {
         return view('admin/items/create');
@@ -43,14 +41,12 @@ class ItemController extends Controller
         return redirect()->route('admin.items.show', $item)->with('ok','Item created');
     }
 
-    // SHOW
     public function show(Item $item)
     {
         $movements = $item->movements()->latest()->paginate(20);
         return view('admin/items/show', compact('item','movements'));
     }
 
-    // EDIT
     public function edit(Item $item)
     {
         return view('admin/items/edit', compact('item'));
@@ -60,7 +56,6 @@ class ItemController extends Controller
     {
         $data = $r->validate([
             'name' => ['required','string','max:255', Rule::unique('items','name')->ignore($item->id)],
-            // base_unit immutable in Phase 1 → not updatable
             'low_stock_threshold' => ['required','numeric','min:0'],
             'cost_price' => ['nullable','numeric','min:0'],
             'is_active' => ['boolean'],
@@ -69,14 +64,12 @@ class ItemController extends Controller
         return back()->with('ok','Item updated');
     }
 
-    // TOGGLE ACTIVE
     public function toggle(Item $item)
     {
         $item->update(['is_active' => ! $item->is_active]);
         return back()->with('ok','Item status updated');
     }
 
-    // RESTOCK (+)
     public function restock(Request $r, Item $item)
     {
         $this->authorizeWrite($item);
@@ -95,7 +88,6 @@ class ItemController extends Controller
         $baseQty = Units::toBase($data['unit'], (float)$data['qty']);
 
         \DB::transaction(function () use ($item, $baseQty, $data) {
-            // 1) Create a lot for this restock
             $lot = ItemLot::create([
                 'item_id'     => $item->id,
                 'qty'         => $baseQty,
@@ -105,7 +97,6 @@ class ItemController extends Controller
                 'note'        => $data['note'] ?? null,
             ]);
 
-            // 2) Log movement referencing the lot
             InventoryMovement::create([
                 'item_id'    => $item->id,
                 'lot_id'     => $lot->id,
@@ -114,7 +105,6 @@ class ItemController extends Controller
                 'note'       => $data['note'] ?? null,
             ]);
 
-            // 3) Sync denormalized current_qty from lots
             $item->resyncStockFromLots();
         });
 
@@ -130,7 +120,7 @@ class ItemController extends Controller
             'qty'  => ['required','numeric','not_in:0'],
             'unit' => ['required', Rule::in(['g','kg','ml','L','pcs'])],
             'note' => ['nullable','string','max:1000'],
-            'expiry_date' => ['nullable','date','after:today'], // optional for positive adjust
+            'expiry_date' => ['nullable','date','after:today'], 
         ]);
 
         $baseQty = Units::toBase($data['unit'], (float)$data['qty']);
@@ -142,7 +132,7 @@ class ItemController extends Controller
         \DB::transaction(function () use ($item, $baseQty, $data) {
 
             if ($baseQty > 0) {
-                // Positive adjust → treat like a manual lot add (no supplier), optional expiry
+
                 $lot = ItemLot::create([
                     'item_id'     => $item->id,
                     'qty'         => $baseQty,
@@ -160,15 +150,14 @@ class ItemController extends Controller
                     'note'       => $data['note'] ?? 'Adjustment (+)',
                 ]);
             } else {
-                // Negative adjust → deplete FEFO (earliest expiry first), skipping expired lots
                 $needed = abs($baseQty);
 
                 $lots = $item->lots()
                     ->where(function($q){
                         $q->whereNull('expiry_date')->orWhere('expiry_date', '>', now()->toDateString());
                     })
-                    ->orderByRaw('expiry_date IS NULL') // non-expiring last
-                    ->orderBy('expiry_date')            // earliest expiry first
+                    ->orderByRaw('expiry_date IS NULL') 
+                    ->orderBy('expiry_date')            
                     ->orderBy('id')
                     ->lockForUpdate()
                     ->get();
@@ -184,10 +173,8 @@ class ItemController extends Controller
                     $take = min((float)$lot->qty, $needed);
                     if ($take <= 0) continue;
 
-                    // reduce lot
                     $lot->decrement('qty', $take);
 
-                    // log per-lot movement
                     InventoryMovement::create([
                         'item_id'    => $item->id,
                         'lot_id'     => $lot->id,
@@ -200,7 +187,6 @@ class ItemController extends Controller
                 }
             }
 
-            // resync item stock from lots after any adjust
             $item->resyncStockFromLots();
         });
 
@@ -210,8 +196,6 @@ class ItemController extends Controller
 
     private function authorizeWrite(Item $item)
     {
-        // phase-1: protect via routes middleware role:admin
-        // method kept for future policy use
         return true;
     }
 }

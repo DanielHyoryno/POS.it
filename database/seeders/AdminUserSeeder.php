@@ -11,24 +11,22 @@ class AdminUserSeeder extends Seeder
 {
     public function run(): void
     {
-        // Admin
         User::firstOrCreate(
             ['email' => 'admin@example.com'],
             [
                 'name' => 'Admin',
-                'password' => Hash::make('password'), // change in prod
+                'password' => Hash::make('password'), 
                 'email_verified_at' => now(),
                 'remember_token' => Str::random(10),
                 'role' => 'admin',
             ]
         );
 
-        // Employee
         User::firstOrCreate(
             ['email' => 'employee@example.com'],
             [
                 'name' => 'Employee',
-                'password' => Hash::make('password'), // change in prod
+                'password' => Hash::make('password'), 
                 'email_verified_at' => now(),
                 'remember_token' => Str::random(10),
                 'role' => 'employee',

@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
-    // LIST
     public function index(Request $r)
     {
         $q = Product::query()
@@ -26,7 +25,6 @@ class ProductController extends Controller
         return view('admin/products/index', compact('products'));
     }
 
-    // CREATE
     public function create()
     {
         $items = Item::orderBy('name')->get(['id','name','base_unit','is_active']);
@@ -43,20 +41,16 @@ class ProductController extends Controller
             'selling_price' => ['required','numeric','min:0'],
             'is_active'     => ['boolean'],
 
-            // category & image
             'category_id'   => ['nullable','exists:categories,id'],
             'image'         => ['nullable','image','mimes:jpg,jpeg,png,webp','max:2048'],
 
-            // simple
             'linked_item_id' => ['nullable','exists:items,id','required_if:type,simple'],
             'per_sale_qty'   => ['nullable','numeric','gt:0','required_if:type,simple'],
 
-            // composite BOM lines (optional on create; can add later)
             'bom.item_id.*' => ['nullable','exists:items,id'],
             'bom.qty.*'     => ['nullable','numeric','gt:0'],
         ]);
 
-        // handle image upload (stores on current disk)
         $imagePath = null;
         if ($r->hasFile('image')) {
             $imagePath = $r->file('image')->store('products', config('filesystems.default'));
@@ -74,12 +68,10 @@ class ProductController extends Controller
             'per_sale_qty'    => $data['type']==='simple' ? $data['per_sale_qty']   : null,
         ]);
 
-        // optional: create BOM rows if provided on create
         if ($product->isComposite() && $r->has('bom.item_id')) {
             $this->syncBom($product, $r);
         }
 
-        // Activation guards
         if ($product->isComposite() && $product->is_active && $product->bomLines()->count() === 0) {
             $product->update(['is_active' => false]);
             return redirect()
@@ -90,7 +82,7 @@ class ProductController extends Controller
         return redirect()->route('admin.products.show', $product)->with('ok','Product created');
     }
 
-    // SHOW
+    
     public function show(Product $product)
     {
         $product->load('linkedItem','bomLines.item','category');
@@ -98,7 +90,6 @@ class ProductController extends Controller
         return view('admin/products/show', compact('product','estimatedCost'));
     }
 
-    // EDIT
     public function edit(Product $product)
     {
         $product->load('linkedItem','bomLines.item','category');
@@ -117,7 +108,6 @@ class ProductController extends Controller
             'selling_price' => ['required','numeric','min:0'],
             'is_active'     => ['boolean'],
 
-            // category & image
             'category_id'   => ['nullable','exists:categories,id'],
             'image'         => ['nullable','image','mimes:jpg,jpeg,png,webp','max:2048'],
 
@@ -128,7 +118,6 @@ class ProductController extends Controller
             'bom.qty.*'     => ['nullable','numeric','gt:0'],
         ]);
 
-        // image replace (delete old if new uploaded)
         $imagePath = $product->image_path;
         if ($r->hasFile('image')) {
             if ($imagePath && Storage::disk(config('filesystems.default'))->exists($imagePath)) {
@@ -137,7 +126,6 @@ class ProductController extends Controller
             $imagePath = $r->file('image')->store('products', config('filesystems.default'));
         }
 
-        // Enforce type switch rules
         $product->update([
             'name'            => $data['name'],
             'sku'             => $data['sku'] ?? null,
@@ -156,7 +144,6 @@ class ProductController extends Controller
             $product->bomLines()->delete();
         }
 
-        // Guards
         if ($product->isComposite() && $product->is_active && $product->bomLines()->count() === 0) {
             $product->update(['is_active' => false]);
             return back()->with('error','Composite product requires at least one BOM line. Deactivated.');
@@ -170,7 +157,6 @@ class ProductController extends Controller
         return redirect()->route('admin.products.show', $product)->with('ok','Product updated');
     }
 
-    // TOGGLE ACTIVE
     public function toggle(Product $product)
     {
         if (! $product->is_active) {
@@ -186,7 +172,6 @@ class ProductController extends Controller
         return back()->with('ok','Product status updated');
     }
 
-    // BOM EDIT (separate screen)
     public function editBom(Product $product)
     {
         abort_unless($product->isComposite(), 404);
@@ -209,7 +194,6 @@ class ProductController extends Controller
         return back()->with('ok','BOM updated');
     }
 
-    /** Helpers */
     private function syncBom(Product $product, Request $r): void
     {
         $itemIds = $r->input('bom.item_id', []);
@@ -224,7 +208,6 @@ class ProductController extends Controller
             }
         }
 
-        // dedupe by item_id
         $rows = array_values(array_reduce($rows, function($carry, $row){
             $carry[$row['item_id']] = $row; return $carry;
         }, []));

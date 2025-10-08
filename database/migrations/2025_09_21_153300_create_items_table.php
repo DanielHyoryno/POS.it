@@ -17,7 +17,7 @@ return new class extends Migration
             $t->enum('base_unit', ['g','ml','pcs']);
             $t->decimal('current_qty', 12, 3)->default(0);
             $t->decimal('low_stock_threshold', 12, 3)->default(0);
-            $t->decimal('cost_price', 12, 2)->nullable(); // noted earlier
+            $t->decimal('cost_price', 12, 2)->nullable();
             $t->boolean('is_active')->default(true);
             $t->timestamps();
         });

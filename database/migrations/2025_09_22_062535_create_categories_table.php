@@ -13,8 +13,8 @@ return new class extends Migration {
             $t->string('slug')->unique();
             $t->unsignedInteger('sort_order')->default(0);
             $t->boolean('is_active')->default(true);
-            $t->string('icon')->nullable();   // path or classname (optional)
-            $t->string('color')->nullable();  // hex or tailwind key (optional)
+            $t->string('icon')->nullable();  
+            $t->string('color')->nullable(); 
             $t->timestamps();
         });
 

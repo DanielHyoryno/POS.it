@@ -8,15 +8,13 @@ use App\Models\InventoryMovement;
 
 class MovementController extends Controller
 {
-    // JSON feed for recent movements with pagination
     public function feed(Request $request)
     {
-        $perPage = (int) $request->query('per', 6); // how many per "page"
+        $perPage = (int) $request->query('per', 6);  
         $movements = InventoryMovement::with('item:id,name,base_unit')
             ->latest()
             ->simplePaginate($perPage);
 
-        // Render just the rows (partial)
         $html = view('admin.movements._rows', [
             'rows' => $movements->items(),
         ])->render();

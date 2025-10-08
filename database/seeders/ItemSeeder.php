@@ -21,7 +21,7 @@ class ItemSeeder extends Seeder
         foreach ($items as $data) {
             Item::firstOrCreate(
                 ['name' => $data['name']],
-                $data + ['current_qty' => 0] // will be resynced from lots
+                $data + ['current_qty' => 0] 
             );
         }
     }

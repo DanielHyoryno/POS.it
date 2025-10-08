@@ -13,10 +13,9 @@ class CatalogController extends Controller
             ->orderBy('name')
             ->get(['id','name','selling_price','type','is_active','linked_item_id']);
 
-
-        // preload relations for availability calc
         $products->load(['item','bomComponents']);
 
         return view('employee.sales.index', compact('products'));
     }
 }
+

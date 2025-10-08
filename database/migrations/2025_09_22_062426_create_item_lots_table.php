@@ -9,10 +9,10 @@ return new class extends Migration {
         Schema::create('item_lots', function (Blueprint $t) {
             $t->id();
             $t->foreignId('item_id')->constrained()->cascadeOnDelete();
-            $t->decimal('qty', 12, 3);                 // remaining qty in this lot
-            $t->date('expiry_date')->nullable();       // null = non-expiring
+            $t->decimal('qty', 12, 3);                 
+            $t->date('expiry_date')->nullable();       
             $t->timestamp('received_at')->nullable();
-            $t->decimal('cost_price', 12, 2)->nullable(); // per-unit override (optional)
+            $t->decimal('cost_price', 12, 2)->nullable(); 
             $t->string('note')->nullable();
             $t->timestamps();
 

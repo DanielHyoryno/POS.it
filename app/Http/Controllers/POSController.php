@@ -11,9 +11,7 @@ use Illuminate\Support\Str;
 
 class POSController extends Controller
 {
-    /* =========================
-     * Catalog (Product listing)
-     * ========================= */
+
     public function catalog()
     {
         $products = Product::where('is_active', true)
@@ -23,18 +21,12 @@ class POSController extends Controller
         return view('employee.sales.index', compact('products'));
     }
 
-    /* =========================
-     * Cart Operations
-     * ========================= */
-
-    // Show cart
     public function cartShow()
     {
         $cart = session()->get('cart', []);
         return view('employee.sales.cart', compact('cart'));
     }
 
-    // Add product to cart
     public function cartAdd(Request $request)
     {
         $product = Product::findOrFail($request->product_id);
@@ -57,7 +49,6 @@ class POSController extends Controller
         return redirect()->route('employee.sales.cart')->with('success', 'Product added to cart!');
     }
 
-    // Update cart item qty
     public function cartUpdate(Request $request)
     {
         $cart = session()->get('cart', []);
@@ -70,7 +61,6 @@ class POSController extends Controller
         return redirect()->route('employee.sales.cart')->with('success', 'Cart updated.');
     }
 
-    // Remove single item
     public function cartRemove(Request $request)
     {
         $cart = session()->get('cart', []);
@@ -83,7 +73,6 @@ class POSController extends Controller
         return redirect()->route('employee.sales.cart')->with('success', 'Item removed.');
     }
 
-    // Clear all cart
     public function cartClear()
     {
         session()->forget('cart');
@@ -111,7 +100,6 @@ class POSController extends Controller
             return redirect()->route('employee.sales.catalog')->with('error', 'Cart is empty.');
         }
 
-        // Calculate totals
         $subtotal = collect($cart)->sum(fn ($item) => $item['price'] * $item['qty']);
         $discount = 0;
         $tax      = 0;
@@ -119,7 +107,6 @@ class POSController extends Controller
         $paid     = $request->input('paid', $total);
         $change   = $paid - $total;
 
-        // Create sale
         $sale = Sale::create([
             'invoice_no' => 'INV-' . now()->format('Ymd') . '-' . Str::upper(Str::random(5)),
             'subtotal'   => $subtotal,
@@ -132,7 +119,6 @@ class POSController extends Controller
             'user_id'    => auth()->id(),
         ]);
 
-        // Insert items + stock movements
         foreach ($cart as $item) {
             SaleItem::create([
                 'sale_id'    => $sale->id,
@@ -142,7 +128,6 @@ class POSController extends Controller
                 'total'      => $item['price'] * $item['qty'],
             ]);
 
-            // Deduct stock if linked to item
             $product = Product::find($item['id']);
             if ($product && $product->linkedItem) {
                 $needed = $item['qty'] * ($product->per_sale_qty ?? 1);
@@ -157,7 +142,6 @@ class POSController extends Controller
             }
         }
 
-        // Clear cart
         session()->forget('cart');
 
         return redirect()->route('employee.sales.invoice', $sale->id)
