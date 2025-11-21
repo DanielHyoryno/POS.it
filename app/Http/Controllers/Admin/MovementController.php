@@ -10,7 +10,7 @@ class MovementController extends Controller
 {
     public function feed(Request $request)
     {
-        $perPage = (int) $request->query('per', 6);  
+        $perPage = $request->query('per', 6);
         $movements = InventoryMovement::with('item:id,name,base_unit')
             ->latest()
             ->simplePaginate($perPage);
@@ -20,8 +20,8 @@ class MovementController extends Controller
         ])->render();
 
         $nextUrl = $movements->hasMorePages()
-            ? route('admin.movements.feed', ['page' => $movements->currentPage() + 1, 'per' => $perPage])
-            : null;
+            ? route('admin.movements.feed', 
+            ['page' => $movements->currentPage() + 1, 'per' => $perPage]) : null;
 
         return response()->json([
             'html'     => $html,

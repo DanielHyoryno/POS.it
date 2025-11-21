@@ -12,6 +12,11 @@ class ProductBomLine extends Model
         'qty' => 'decimal:3',
     ];
 
-    public function product() { return $this->belongsTo(Product::class); }
-    public function item()     { return $this->belongsTo(Item::class); }
+    public function product(){ 
+        return $this->belongsTo(Product::class); 
+    }
+    
+    public function item(){ 
+        return $this->belongsTo(Item::class); 
+    }
 }

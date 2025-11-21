@@ -15,15 +15,17 @@ class ItemLot extends Model
         'received_at' => 'datetime',
     ];
 
-    public function item() { return $this->belongsTo(Item::class); }
+    public function item(){ 
+        return $this->belongsTo(Item::class); 
+    }
 
-    public function scopeNotExpired($q) {
+    public function scopeNotExpired($q){
         return $q->where(function($qq){
             $qq->whereNull('expiry_date')->orWhere('expiry_date', '>', now()->toDateString());
         });
     }
 
-    public function isExpired(): bool {
+    public function isExpired(): bool{
         return $this->expiry_date && $this->expiry_date->lte(now()->startOfDay());
     }
 }

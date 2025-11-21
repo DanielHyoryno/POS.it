@@ -12,5 +12,7 @@ class Payment extends Model
         'amount' => 'decimal:2',
     ];
 
-    public function sale(){ return $this->belongsTo(Sale::class); }
+    public function sale(){
+        return $this->belongsTo(Sale::class); 
+    }
 }

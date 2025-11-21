@@ -9,10 +9,7 @@ use Illuminate\Support\Carbon;
 
 class HistoryController extends Controller
 {
-    /**
-     * Show sales history for a given day (default: today).
-     * URL: /employee/sales/history?date=YYYY-MM-DD
-     */
+
     public function index(Request $request)
     {
         $dateStr = $request->query('date', now()->toDateString());

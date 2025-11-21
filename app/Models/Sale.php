@@ -19,7 +19,15 @@ class Sale extends Model
         'change'   => 'decimal:2',
     ];
 
-    public function items()   { return $this->hasMany(SaleItem::class); }
-    public function payments(){ return $this->hasMany(Payment::class); }
-    public function user()    { return $this->belongsTo(User::class); }
+    public function items(){ 
+        return $this->hasMany(SaleItem::class); 
+    }
+
+    public function payments(){ 
+        return $this->hasMany(Payment::class); 
+    }
+    
+    public function user(){ 
+        return $this->belongsTo(User::class); 
+    }
 }

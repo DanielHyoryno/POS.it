@@ -3,69 +3,79 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\{Product, Item, Category};
+use Illuminate\Support\Facades\DB;
+use Faker\Factory as Faker;
 
 class ProductSeeder extends Seeder
 {
-    public function run(): void
+    public function run()
     {
-        $drinks  = Category::where('name','Drinks')->first();
-        $food    = Category::where('name','Food')->first();
-        $bakery  = Category::where('name','Bakery')->first();
+        $faker = Faker::create();
 
-        $milk   = Item::where('name','Milk')->first();
-        $bread  = Item::where('name','Bread Loaf')->first();
+        $drinks = DB::table('categories')->where('name','Drinks')->first();
+        $food = DB::table('categories')->where('name','Food')->first();
+        $bakery = DB::table('categories')->where('name','Bakery')->first();
 
-        Product::firstOrCreate(
-            ['name' => 'Milk 200ml'],
-            [
-                'sku'             => 'MILK200',
-                'type'            => 'simple',
-                'category_id'     => optional($drinks)->id,
-                'selling_price'   => 8000,
-                'is_active'       => true,
-                'linked_item_id'  => optional($milk)->id,
-                'per_sale_qty'    => 200,
-                'image_path'      => null,
-            ]
+        $milk = DB::table('items')->where('name','Milk')->first();
+        $bread = DB::table('items')->where('name','Bread Loaf')->first();
+
+        $this->seedProduct(
+            'Milk 200ml',
+            strtoupper($faker->bothify('MIL###')),
+            'simple',
+            $drinks ? $drinks->id : null,
+            $faker->numberBetween(6000,12000),
+            $milk ? $milk->id : null,
+            200
         );
 
-        Product::firstOrCreate(
-            ['name' => 'Bread Loaf'],
-            [
-                'sku'             => 'BREAD01',
-                'type'            => 'simple',
-                'category_id'     => optional($bakery)->id,
-                'selling_price'   => 12000,
-                'is_active'       => true,
-                'linked_item_id'  => optional($bread)->id,
-                'per_sale_qty'    => 1,
-                'image_path'      => null,
-            ]
+        $this->seedProduct(
+            'Bread Loaf',
+            strtoupper($faker->bothify('BRD###')),
+            'simple',
+            $bakery ? $bakery->id : null,
+            $faker->numberBetween(10000,18000),
+            $bread ? $bread->id : null,
+            1
         );
 
-        Product::firstOrCreate(
-            ['name' => 'Gym Rat Drink'],
-            [
-                'sku'             => 'GYMRAT01',
-                'type'            => 'composite',
-                'category_id'     => optional($drinks)->id,
-                'selling_price'   => 35000,
-                'is_active'       => true,
-                'image_path'      => null,
-            ]
+        $this->seedProduct(
+            'Gym Rat Drink',
+            strtoupper($faker->bothify('GYM###')),
+            'composite',
+            $drinks ? $drinks->id : null,
+            $faker->numberBetween(25000,40000)
         );
 
-        Product::firstOrCreate(
-            ['name' => 'Choco Banana Toast'],
-            [
-                'sku'             => 'TOAST01',
-                'type'            => 'composite',
-                'category_id'     => optional($food)->id,
-                'selling_price'   => 25000,
-                'is_active'       => true,
-                'image_path'      => null,
-            ]
+        $this->seedProduct(
+            'Choco Banana Toast',
+            strtoupper($faker->bothify('TST###')),
+            'composite',
+            $food ? $food->id : null,
+            $faker->numberBetween(20000,35000)
         );
+    }
+
+    private function seedProduct($name,$sku,$type,$categoryId,$price,$linkedItemId=null,$perSaleQty=null)
+    {
+        $exists = DB::table('products')->where('name',$name)->first();
+
+        if($exists){
+            return;
+        }
+
+        DB::table('products')->insert([
+            'name'=>$name,
+            'sku'=>$sku,
+            'type'=>$type,
+            'category_id'=>$categoryId,
+            'selling_price'=>$price,
+            'is_active'=>true,
+            'linked_item_id'=>$type==='simple' ? $linkedItemId : null,
+            'per_sale_qty'=>$type==='simple' ? $perSaleQty : null,
+            'image_path'=>null,
+            'created_at'=>now(),
+            'updated_at'=>now(),
+        ]);
     }
 }

@@ -4,65 +4,59 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use App\Models\{Item, ItemLot, InventoryMovement};
+use Faker\Factory as Faker;
 
 class ItemLotSeeder extends Seeder
 {
-    public function run(): void
+    public function run()
     {
-        // Define lot plans per item (name => [ [qty, +daysToExpire|null], ... ])
-        $plan = [
-            'Milk' => [
-                [500,  5],     // near expiry
-                [1500, 30],
-            ],
-            'Almond' => [
-                [800,  45],
-                [400,  null],  // non-expiring lot
-            ],
-            'Banana' => [
-                [1200, 6],     // near expiry
-            ],
-            'Chocolate Bar' => [
-                [20,   365],   // long shelf-life
-            ],
-            'Bread Loaf' => [
-                [10,   2],     // very near expiry
-                [15,   7],
-            ],
-            'Coffee Bean' => [
-                [1000, 120],
-            ],
-        ];
+        $faker = Faker::create();
 
-        DB::transaction(function () use ($plan) {
-            foreach ($plan as $itemName => $lots) {
-                $item = Item::where('name', $itemName)->first();
-                if (!$item) continue;
+        $items = DB::table('items')->get();
 
-                foreach ($lots as [$qty, $days]) {
-                    $lot = ItemLot::create([
-                        'item_id'     => $item->id,
-                        'qty'         => $qty,
-                        'expiry_date' => is_null($days) ? null : now()->addDays($days)->toDateString(),
-                        'received_at' => now()->subDays(rand(0,5)),
-                        'cost_price'  => $item->cost_price,
-                        'note'        => 'Seed lot',
-                    ]);
+        foreach($items as $item){
+            $lotCount = rand(1,3);
 
-                    InventoryMovement::create([
-                        'item_id'    => $item->id,
-                        'lot_id'     => $lot->id,
-                        'change_qty' => $qty,
-                        'reason'     => 'restock',
-                        'note'       => 'Seed restock',
-                        'created_at' => $lot->received_at,
-                        'updated_at' => $lot->received_at,
-                    ]);
-                }
+            for($i=0; $i<$lotCount; $i++){
+                $qty = $faker->numberBetween(100,2000);
 
-                $item->resyncStockFromLots();
+                $hasExpiry = $faker->boolean(80);
+                $daysToExpire = $hasExpiry ? $faker->numberBetween(1,180) : null;
+
+                $receivedAt = now()->subDays($faker->numberBetween(0,5));
+
+                $lotId = DB::table('item_lots')->insertGetId([
+                    'item_id'=>$item->id,
+                    'qty'=>$qty,
+                    'expiry_date'=>$daysToExpire ? now()->addDays($daysToExpire)->toDateString() : null,
+                    'received_at'=>$receivedAt,
+                    'cost_price'=>$item->cost_price,
+                    'note'=>'Seed lot',
+                    'created_at'=>now(),
+                    'updated_at'=>now(),
+                ]);
+
+                DB::table('inventory_movements')->insert([
+                    'item_id'=>$item->id,
+                    'lot_id'=>$lotId,
+                    'change_qty'=>$qty,
+                    'reason'=>'restock',
+                    'note'=>'Seed restock',
+                    'created_at'=>$receivedAt,
+                    'updated_at'=>$receivedAt,
+                ]);
             }
-        });
+
+            $sum = DB::table('item_lots')
+                ->where('item_id',$item->id)
+                ->sum('qty');
+
+            DB::table('items')
+                ->where('id',$item->id)
+                ->update([
+                    'current_qty'=>$sum,
+                    'updated_at'=>now(),
+                ]);
+        }
     }
 }

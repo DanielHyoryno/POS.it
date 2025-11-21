@@ -27,7 +27,9 @@ class Item extends Model
         return $q->whereColumn('current_qty', '<=', 'low_stock_threshold');
     }
 
-    public function lots() { return $this->hasMany(ItemLot::class); }
+    public function lots(){ 
+        return $this->hasMany(ItemLot::class); 
+    }
 
     public function resyncStockFromLots(): void
     {

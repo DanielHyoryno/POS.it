@@ -3,7 +3,7 @@ namespace App\Support;
 
 class Units
 {
-    // Normalize user input to base (g, ml, pcs)
+    // memastikan convert g ke kg dan satuan lainnya
     public static function toBase(string $unit, float $qty): float
     {
         return match ($unit) {

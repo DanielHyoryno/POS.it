@@ -12,5 +12,7 @@ class Category extends Model
         'is_active' => 'bool',
     ];
 
-    public function products() { return $this->hasMany(Product::class); }
+    public function products(){
+        return $this->hasMany(Product::class);
+    }
 }
