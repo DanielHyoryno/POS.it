@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -17,26 +18,32 @@
 </head>
 
 <body class="font-sans antialiased">
-<div class="min-h-screen bg-gray-100">
-    @include('layouts.navigation')
+    <div class="min-h-screen bg-gray-100">
+        @if(Auth::check() && Auth::user()->role === 'admin')
+        @include('layouts.partials.admin_navbar')
+        @else
+        @include('layouts.partials.employee_navbar')
+        @endif
 
-    {{-- Page Heading (optional) --}}
-    @hasSection('header')
+
+        {{-- Page Heading (optional) --}}
+        @hasSection('header')
         <header class="bg-white shadow">
             <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                 @yield('header')
             </div>
         </header>
-    @endif
+        @endif
 
-    {{-- Page Content --}}
-    <main>
-        @yield('content')
-    </main>
-    
-</div>
+        {{-- Page Content --}}
+        <main>
+            @yield('content')
+        </main>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
 
 </body>
+
 </html>
