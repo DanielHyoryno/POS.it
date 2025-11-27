@@ -47,8 +47,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/movements/feed', [MovementController::class, 'feed'])
                 ->name('movements.feed');
 
-            Route::get('/analytics/sales', [DashboardController::class, 'salesSeries'])
-                ->name('analytics.sales'); 
+            Route::get('/analytics/sales', [AdminDashboardController::class, 'salesSeries'])
+                ->name('analytics.sales');
 
             Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
         });

@@ -146,10 +146,16 @@ class DashboardController extends Controller
         $salesQuery = Sale::whereBetween('created_at', [$start, $now]);
 
         if ($status) {
+            // kalau user kirim ?status=paid, dll
             $salesQuery->where('status', $status);
         } else {
-            $salesQuery->where('status', '!=', 'void');
+            // include NULL juga, pokoknya cuma exclude 'void'
+            $salesQuery->where(function ($q) {
+                $q->whereNull('status')
+                ->orWhere('status', '!=', 'void');
+            });
         }
+
 
         $sales = $salesQuery->get(['id', 'total', 'status', 'created_at']);
 
