@@ -81,7 +81,7 @@
                                 {{ $lot->expiry_date->format('Y-m-d') }}
                                 @if(!$expired)
                                 <span class="ml-2 text-[10px] px-2 py-0.5 rounded-full bg-amber-100 text-amber-700">
-                                    {{ now()->diffInDays($lot->expiry_date,false) }}d left
+                                    {{ __('days_left', ['count' => ceil(now()->diffInDays($lot->expiry_date, false))]) }}
                                 </span>
                                 @else
                                 <span

@@ -1,4 +1,7 @@
 {
+    "days_left": ":count day left",
+    "no_expiry": "No expiry",
+    "expired": "Expired",
     "(and :count more error)": "(and :count more error)",
     "(and :count more errors)": "(and :count more error)|(and :count more errors)|(and :count more errors)",
     "A decryption key is required.": "A decryption key is required.",

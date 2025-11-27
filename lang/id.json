@@ -151,6 +151,9 @@
         "bakery": "Roti & Kue",
         "specials": "Spesial"
     },
+    "days_left": "tersisa :count hari",
+    "no_expiry": "Tidak ada tanggal kadaluarsa",
+    "expired": "Kadaluarsa",
     "(and :count more error)": "(dan :count kesalahan lainnya)",
     "(and :count more errors)": "(dan :count kesalahan lainnya)|(dan :count kesalahan lainnya)|(dan :count kesalahan lainnya)",
     "A decryption key is required.": "Kunci dekripsi diperlukan.",
