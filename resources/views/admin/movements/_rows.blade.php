@@ -14,6 +14,7 @@
         @if(!empty($mv->note)) — <span class="text-muted">{{ $mv->note }}</span>@endif
       </div>
     </div>
+    
     <div class="text-end">
       <div class="fw-semibold {{ $signClass }}">
         {{ rtrim(rtrim(number_format($qty, 3, '.', ''), '0'), '.') }}

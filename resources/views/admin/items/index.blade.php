@@ -24,6 +24,7 @@
           <th class="p-3"></th>
         </tr>
       </thead>
+
       <tbody>
         @forelse ($items as $it)
           <tr class="border-t">
@@ -31,6 +32,7 @@
               @if($it->image_path)
                 <img src="{{ Storage::url($it->image_path) }}" class="h-8 w-8 rounded object-cover">
               @endif
+
               <a href="{{ route('admin.items.show',$it) }}" class="text-blue-600 hover:underline">{{ $it->name }}</a>
             </td>
 
@@ -40,18 +42,22 @@
                 <span class="ml-2 text-xs px-2 py-0.5 bg-red-100 text-red-700 rounded">Low</span>
               @endif
             </td>
+
             <td class="p-3">{{ $it->base_unit }}</td>
             <td class="p-3 text-right">{{ rtrim(rtrim(number_format($it->current_qty,3,'.',''), '0'), '.') }}</td>
             <td class="p-3 text-right">{{ rtrim(rtrim(number_format($it->low_stock_threshold,3,'.',''), '0'), '.') }}</td>
+            
             <td class="p-3 text-center">
               <span class="px-2 py-0.5 rounded {{ $it->is_active ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-700' }}">
                 {{ $it->is_active ? 'Active' : 'Inactive' }}
               </span>
             </td>
+
             <td class="p-3 text-right space-x-2">
               <a href="{{ route('admin.items.edit', $it) }}" class="px-2 py-1 text-sm border rounded">Edit</a>
               <form action="{{ route('admin.items.toggle', $it) }}" method="POST" class="inline">
-                @csrf @method('PATCH')
+                @csrf 
+                @method('PATCH')
                 <button class="px-2 py-1 text-sm border rounded">{{ $it->is_active ? 'Deactivate' : 'Activate' }}</button>
               </form>
             </td>

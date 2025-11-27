@@ -1,12 +1,20 @@
 @extends('layouts.app')
+
 @section('content')
 <div class="max-w-5xl mx-auto p-6 space-y-6">
 
-  @if (session('ok'))   <div class="p-3 bg-green-50 border border-green-200 rounded">{{ session('ok') }}</div>@endif
+  @if (session('ok'))
+    <div class="p-3 bg-green-50 border border-green-200 rounded">{{ session('ok') }}</div>
+  @endif
+  
   @if ($errors->any())
-    <div class="p-3 bg-red-50 border border-red-200 rounded"><ul class="list-disc pl-5 text-sm">
-      @foreach ($errors->all() as $e) <li>{{ $e }}</li> @endforeach
-    </ul></div>
+    <div class="p-3 bg-red-50 border border-red-200 rounded">
+      <ul class="list-disc pl-5 text-sm">
+        @foreach ($errors->all() as $e) 
+          <li>{{ $e }}</li> 
+        @endforeach
+      </ul>
+    </div>
   @endif
 
   <div class="bg-white rounded-2xl shadow-sm ring-1 ring-gray-200 p-6">
@@ -16,6 +24,7 @@
       @else
         <div class="h-20 w-20 rounded bg-gray-200 grid place-items-center text-gray-500 text-xs">IMG</div>
       @endif
+
       <div class="min-w-0">
         <h1 class="text-2xl font-bold">{{ $item->name }}</h1>
         <div class="text-gray-600 text-sm">Base unit: <b>{{ $item->base_unit }}</b></div>
@@ -27,6 +36,7 @@
           </span>
         </div>
       </div>
+      
       <div class="ml-auto">
         <form action="{{ route('admin.items.toggle',$item) }}" method="POST">@csrf @method('PATCH')
           <button class="px-3 py-2 text-sm border rounded">{{ $item->is_active ? 'Deactivate' : 'Activate' }}</button>
@@ -52,6 +62,7 @@
               <th class="text-left p-3.5">Note</th>
             </tr>
           </thead>
+
           <tbody class="divide-y">
             @forelse($item->lots()->orderByRaw('expiry_date IS NULL')->orderBy('expiry_date')->get() as $lot)
               @php $expired = $lot->expiry_date && $lot->expiry_date->lte(now()); @endphp
@@ -97,10 +108,12 @@
               <option value="pcs">pcs</option>
             </select>
           </div>
+
           <div>
             <label class="block text-sm text-gray-600 mb-1">Expiry Date (optional)</label>
             <input type="date" name="expiry_date" class="border p-2 rounded w-full">
           </div>
+
           <input type="text" name="note" class="border p-2 rounded w-full" placeholder="Note (optional)">
           <button class="w-full px-3 py-2 bg-emerald-600 text-white rounded">Add Stock</button>
         </form>
@@ -118,6 +131,7 @@
               <option value="pcs">pcs</option>
             </select>
           </div>
+
           <div>
             <label class="block text-sm text-gray-600 mb-1">Expiry (only for +)</label>
             <input type="date" name="expiry_date" class="border p-2 rounded w-full">

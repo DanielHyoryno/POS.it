@@ -7,15 +7,24 @@
   @if ($errors->any())
     <div class="p-3 bg-red-50 border border-red-200 rounded">
       <ul class="list-disc pl-5 text-sm">
-        @foreach ($errors->all() as $e) <li>{{ $e }}</li> @endforeach
+        @foreach ($errors->all() as $e) 
+          <li>{{ $e }}</li> 
+        @endforeach
       </ul>
     </div>
   @endif
-  @if (session('ok')) <div class="p-3 bg-green-50 border border-green-200 rounded">{{ session('ok') }}</div> @endif
-  @if (session('error')) <div class="p-3 bg-red-50 border border-red-200 rounded">{{ session('error') }}</div> @endif
+
+  @if (session('ok')) 
+    <div class="p-3 bg-green-50 border border-green-200 rounded">{{ session('ok') }}</div> 
+  @endif
+
+  @if (session('error')) 
+    <div class="p-3 bg-red-50 border border-red-200 rounded">{{ session('error') }}</div> 
+  @endif
 
   <form method="POST" action="{{ route('admin.products.update',$product) }}" enctype="multipart/form-data" class="space-y-4">
-    @csrf @method('PUT')
+    @csrf 
+    @method('PUT')
 
     <div>
       <label class="block mb-1 font-medium">Name</label>
@@ -27,6 +36,7 @@
         <label class="block mb-1 font-medium">SKU (optional)</label>
         <input name="sku" value="{{ old('sku',$product->sku) }}" class="w-full border p-2 rounded">
       </div>
+
       <div>
         <label class="block mb-1 font-medium">Type</label>
         <select name="type" class="w-full border p-2 rounded" required>
@@ -34,6 +44,7 @@
           <option value="composite" @selected(old('type',$product->type)==='composite')>Composite</option>
         </select>
       </div>
+
       <div>
         <label class="block mb-1 font-medium">Selling Price</label>
         <input name="selling_price" type="number" step="0.01" min="0" value="{{ old('selling_price',$product->selling_price) }}" class="w-full border p-2 rounded" required>
@@ -50,6 +61,7 @@
           @endforeach
         </select>
       </div>
+
       <div>
         <label class="block mb-1 font-medium">Image (optional)</label>
         <input type="file" name="image" accept="image/*" class="w-full border p-2 rounded">
@@ -73,9 +85,11 @@
               @endforeach
             </select>
           </div>
+
           <div>
             <input name="per_sale_qty" type="number" step="0.001" min="0.001" value="{{ old('per_sale_qty',$product->per_sale_qty) }}" class="w-full border p-2 rounded">
           </div>
+
         </div>
       </div>
     @endif
@@ -90,7 +104,8 @@
     </div>
 
     <div class="flex items-center gap-2">
-      <input type="checkbox" name="is_active" value="1" @checked(old('is_active',$product->is_active))> <span>Active</span>
+      <input type="checkbox" name="is_active" value="1" @checked(old('is_active',$product->is_active))> 
+      <span>Active</span>
     </div>
 
     <div class="text-right">
@@ -105,6 +120,7 @@
       <h2 class="font-semibold">BOM Lines (quick view)</h2>
       <a href="{{ route('admin.products.bom.edit', $product) }}" class="px-3 py-2 border rounded">Edit BOM</a>
     </div>
+
     <table class="min-w-full">
       <thead class="bg-gray-50">
         <tr>
@@ -112,6 +128,7 @@
           <th class="text-right p-2">Qty</th>
         </tr>
       </thead>
+
       <tbody>
         @forelse($product->bomLines as $line)
           <tr class="border-t">

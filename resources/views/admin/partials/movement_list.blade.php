@@ -7,6 +7,7 @@
         @if($mv->note) — {{ $mv->note }} @endif
       </div>
     </div>
+    
     <div class="font-mono {{ $mv->change_qty < 0 ? 'text-red-600' : 'text-green-700' }}">
       {{ $mv->change_qty > 0 ? '+' : '' }}
       {{ rtrim(rtrim(number_format($mv->change_qty,3,'.',''), '0'), '.') }}

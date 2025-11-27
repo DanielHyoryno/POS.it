@@ -14,9 +14,11 @@
         @endforeach
       </select>
     </div>
+
     <div class="col-md-2">
       <input type="number" step="0.001" min="0.001" class="form-control" name="qty" value="1" required>
     </div>
+
     <div class="col-md-2">
       <button class="btn btn-primary w-100" type="submit">Add</button>
     </div>
@@ -34,6 +36,7 @@
             <th></th>
           </tr>
         </thead>
+
         <tbody>
           @php $sum=0; @endphp
           @foreach(($cart['lines'] ?? []) as $l)
@@ -48,6 +51,7 @@
               </td>
             </tr>
           @endforeach
+
           @if(empty($cart['lines']))
             <tr><td colspan="5" class="text-center text-secondary py-4">Cart is empty</td></tr>
           @endif
@@ -65,6 +69,7 @@
           <option value="card">Card</option>
           <option value="qris">QRIS</option>
         </select>
+        
         <input type="number" step="0.01" name="paid" class="form-control form-control-sm" placeholder="Paid amount" required>
         <button class="btn btn-success">Checkout</button>
       </form>

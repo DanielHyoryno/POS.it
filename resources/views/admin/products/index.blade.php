@@ -14,6 +14,7 @@
       <option value="simple" @selected(request('type')==='simple')>Simple</option>
       <option value="composite" @selected(request('type')==='composite')>Composite</option>
     </select>
+
     <select name="status" class="border p-2 rounded">
       <option value="">Any Status</option>
       <option value="active" @selected(request('status')==='active')>Active</option>
@@ -22,8 +23,13 @@
     <button class="px-3 py-2 border rounded">Filter</button>
   </form>
 
-  @if (session('ok')) <div class="mb-3 p-3 bg-green-50 border border-green-200 rounded">{{ session('ok') }}</div> @endif
-  @if (session('error')) <div class="mb-3 p-3 bg-red-50 border border-red-200 rounded">{{ session('error') }}</div> @endif
+  @if (session('ok')) 
+    <div class="mb-3 p-3 bg-green-50 border border-green-200 rounded">{{ session('ok') }}</div> 
+  @endif
+
+  @if (session('error')) 
+    <div class="mb-3 p-3 bg-red-50 border border-red-200 rounded">{{ session('error') }}</div> 
+  @endif
 
   <div class="overflow-x-auto bg-white rounded shadow">
     <table class="min-w-full">
@@ -36,6 +42,7 @@
           <th class="p-3"></th>
         </tr>
       </thead>
+      
       <tbody>
       @forelse($products as $p)
         <tr class="border-t">
@@ -54,8 +61,11 @@
           </td>
           <td class="p-3">
             <div class="capitalize">{{ $p->type }}</div>
-            @if($p->category) <div class="text-xs text-gray-500">{{ $p->category->name }}</div> @endif
+            @if($p->category) 
+            <div class="text-xs text-gray-500">{{ $p->category->name }}</div>
+            @endif
           </td>
+
           <td class="p-3 text-right">Rp {{ number_format($p->selling_price,2,',','.') }}</td>
           <td class="p-3 text-center">
             <span class="px-2 py-0.5 rounded {{ $p->is_active ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-700' }}">
@@ -68,7 +78,8 @@
             @endif
             <a href="{{ route('admin.products.edit', $p) }}" class="px-2 py-1 text-sm border rounded">Edit</a>
             <form action="{{ route('admin.products.toggle', $p) }}" method="POST" class="inline">
-              @csrf @method('PATCH')
+              @csrf 
+              @method('PATCH')
               <button class="px-2 py-1 text-sm border rounded">{{ $p->is_active ? 'Deactivate' : 'Activate' }}</button>
             </form>
           </td>

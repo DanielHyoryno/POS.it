@@ -60,7 +60,9 @@
               </td>
             </tr>
           @empty
-            <tr><td colspan="6" class="text-center text-secondary py-4">No sales on {{ \Illuminate\Support\Carbon::parse($date)->format('M j, Y') }}.</td></tr>
+            <tr>
+              <td colspan="6" class="text-center text-secondary py-4">No sales on {{ \Illuminate\Support\Carbon::parse($date)->format('M j, Y') }}.</td>
+            </tr>
           @endforelse
         </tbody>
       </table>

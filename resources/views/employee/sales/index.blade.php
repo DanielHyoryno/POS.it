@@ -1,4 +1,5 @@
 @extends('layouts.app')
+
 @section('content')
 <div class="container-xxl py-4">
   <div class="d-flex justify-content-between align-items-center mb-3">
@@ -35,16 +36,20 @@
             <div class="small text-secondary text-uppercase">{{ ucfirst($p->type) }}</div>
             <h6 class="mb-1">{{ $p->name }}</h6>
             <div class="mb-2 fw-semibold">Rp {{ number_format($p->price ?? 0,0,',','.') }}</div>
+
             <span class="badge {{ $available ? 'bg-success-subtle text-success-emphasis':'bg-danger-subtle text-danger-emphasis' }}">
               {{ $available ? 'Available' : 'Not available' }}
             </span>
+
             <form class="mt-auto pt-2" action="{{ route('employee.sales.cart.add') }}" method="post">
               @csrf
               <input type="hidden" name="product_id" value="{{ $p->id }}">
+
               <div class="input-group">
                 <input name="qty" type="number" step="0.001" min="0.001" class="form-control" value="1" {{ $available ? '' : 'disabled' }}>
                 <button class="btn btn-primary" {{ $available ? '' : 'disabled' }}>Add</button>
               </div>
+              
             </form>
           </div>
         </div>

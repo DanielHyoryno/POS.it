@@ -8,7 +8,8 @@
   @include('partials.flash')
 
   <form method="POST" action="{{ route('admin.items.update', $item) }}" class="space-y-4">
-    @csrf @method('PUT')
+    @csrf 
+    @method('PUT')
 
     <div>
       <label class="block mb-1 font-medium">Name</label>
@@ -38,7 +39,6 @@
         <img src="{{ Storage::url($item->image_path) }}" class="mt-2 h-20 rounded object-cover">
       @endisset
     </div>
-
 
     <div class="flex items-center space-x-2">
       <input type="checkbox" id="is_active" name="is_active" value="1" @checked(old('is_active', $item->is_active))>

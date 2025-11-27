@@ -41,7 +41,6 @@
       @endisset
     </div>
 
-
     <div class="flex items-center space-x-2">
       <input type="checkbox" id="is_active" name="is_active" value="1" @checked(old('is_active', true))>
       <label for="is_active">Active</label>

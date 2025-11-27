@@ -10,6 +10,7 @@
       <a href="{{ route('employee.sales.catalog') }}" class="btn btn-lg btn-primary py-4 shadow">
         <i class="bi bi-cart-plus me-2"></i> Start New Transaction
       </a>
+      
       <a href="{{ route('employee.sales.history.index') }}" class="btn btn-lg btn-outline-secondary py-4 shadow">
         <i class="bi bi-clock-history me-2"></i> View Transaction History
       </a>

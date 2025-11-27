@@ -1,10 +1,12 @@
 @extends('layouts.app')
+
 @section('content')
 <div class="container-xxl py-4">
   <div class="d-flex justify-content-between align-items-center mb-3">
     <h1 class="h5 mb-0">Cart</h1>
     <form action="{{ route('employee.sales.cart.clear') }}" method="post" onsubmit="return confirm('Clear cart?')">
-      @csrf @method('DELETE')
+      @csrf 
+      @method('DELETE')
       <button class="btn btn-outline-danger btn-sm">Clear</button>
     </form>
   </div>
@@ -21,8 +23,12 @@
             <th class="text-end" style="width:120px"></th>
           </tr>
         </thead>
+
         <tbody>
-          @php $lines = $cart['lines'] ?? []; @endphp
+          @php 
+            $lines = $cart['lines'] ?? []; 
+          @endphp
+          
           @forelse($lines as $l)
             @php $line = ($l['price'] * $l['qty']) - ($l['discount'] ?? 0); @endphp
             <tr>

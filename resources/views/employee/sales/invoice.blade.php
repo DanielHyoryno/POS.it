@@ -1,4 +1,5 @@
 @extends('layouts.app')
+
 @section('content')
 <div class="container-xxl py-4">
   <div class="d-flex justify-content-between align-items-center mb-3">
@@ -12,8 +13,14 @@
         <div class="table-responsive">
           <table class="table table-sm mb-0">
             <thead class="table-light">
-              <tr><th>Product</th><th class="text-end">Qty</th><th class="text-end">Price</th><th class="text-end">Total</th></tr>
+              <tr>
+                <th>Product</th>
+                <th class="text-end">Qty</th>
+                <th class="text-end">Price</th>
+                <th class="text-end">Total</th>
+              </tr>
             </thead>
+
             <tbody class="table-group-divider">
               @foreach($sale->items as $it)
                 <tr>
@@ -32,13 +39,37 @@
     <div class="col-lg-4">
       <div class="card">
         <div class="card-body">
-          <div class="d-flex justify-content-between"><span>Subtotal</span><strong>Rp {{ number_format($sale->subtotal,0,',','.') }}</strong></div>
-          <div class="d-flex justify-content-between text-secondary"><span>Discount</span><span>Rp {{ number_format($sale->discount,0,',','.') }}</span></div>
-          <div class="d-flex justify-content-between text-secondary"><span>Tax</span><span>Rp {{ number_format($sale->tax,0,',','.') }}</span></div>
+          <div class="d-flex justify-content-between">
+            <span>Subtotal</span>
+            <strong>Rp {{ number_format($sale->subtotal,0,',','.') }}</strong>
+          </div>
+
+          <div class="d-flex justify-content-between text-secondary">
+            <span>Discount</span>
+            <span>Rp {{ number_format($sale->discount,0,',','.') }}</span>
+          </div>
+
+          <div class="d-flex justify-content-between text-secondary">
+            <span>Tax</span>
+            <span>Rp {{ number_format($sale->tax,0,',','.') }}</span>
+          </div>
+
           <hr>
-          <div class="d-flex justify-content-between fs-5"><span>Total</span><strong>Rp {{ number_format($sale->total,0,',','.') }}</strong></div>
-          <div class="d-flex justify-content-between mt-2"><span>Paid</span><span>Rp {{ number_format($sale->paid,0,',','.') }}</span></div>
-          <div class="d-flex justify-content-between"><span>Change</span><span>Rp {{ number_format($sale->change,0,',','.') }}</span></div>
+          <div class="d-flex justify-content-between fs-5">
+            <span>Total</span>
+            <strong>Rp {{ number_format($sale->total,0,',','.') }}</strong>
+          </div>
+
+          <div class="d-flex justify-content-between mt-2">
+            <span>Paid</span>
+            <span>Rp {{ number_format($sale->paid,0,',','.') }}</span>
+          </div>
+
+          <div class="d-flex justify-content-between">
+            <span>Change</span>
+            <span>Rp {{ number_format($sale->change,0,',','.') }}</span>
+          </div>
+          
           <div class="mt-2">
             <span class="badge {{ $sale->status=='paid' ? 'bg-success-subtle text-success-emphasis':'bg-secondary-subtle text-secondary-emphasis' }}">
               {{ ucfirst($sale->status) }}

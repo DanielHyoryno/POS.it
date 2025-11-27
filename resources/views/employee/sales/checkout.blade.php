@@ -9,8 +9,14 @@
         <div class="table-responsive">
           <table class="table table-sm mb-0">
             <thead class="table-light">
-              <tr><th>Product</th><th class="text-end">Qty</th><th class="text-end">Price</th><th class="text-end">Total</th></tr>
+              <tr>
+                <th>Product</th>
+                <th class="text-end">Qty</th>
+                <th class="text-end">Price</th>
+                <th class="text-end">Total</th>
+              </tr>
             </thead>
+            
             <tbody class="table-group-divider">
               @foreach($cart['lines'] as $l)
                 <tr>
@@ -33,6 +39,7 @@
           <div class="d-flex justify-content-between text-secondary"><span>Discount</span><span>Rp {{ number_format($totals['discount'],0,',','.') }}</span></div>
           <div class="d-flex justify-content-between text-secondary"><span>Tax</span><span>Rp {{ number_format($totals['tax'],0,',','.') }}</span></div>
           <hr>
+
           <div class="d-flex justify-content-between fs-5"><span>Total</span><strong>Rp {{ number_format($totals['total'],0,',','.') }}</strong></div>
 
           <form class="mt-3" action="{{ route('employee.sales.checkout.store') }}" method="post">
@@ -45,6 +52,7 @@
                 <option value="qris">QRIS</option>
               </select>
             </div>
+            
             <div class="mb-2">
               <label class="form-label">Paid Amount</label>
               <input type="number" step="0.01" min="0" name="paid" class="form-control" required>

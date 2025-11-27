@@ -18,6 +18,7 @@
         <h1 class="h3 h2-md fw-bold mb-1 text-dark">Admin Dashboard</h1>
         <div class="text-secondary">Welcome back, {{ auth()->user()->name }} 👑</div>
       </div>
+
       <div class="d-flex gap-2">
         <a href="{{ route('admin.items.index') }}" class="btn btn-primary rounded-3">Manage Items</a>
         <a href="{{ route('admin.products.index') }}" class="btn btn-indigo rounded-3 btn-secondary">Manage Products</a>
@@ -47,11 +48,13 @@
           <button type="button" class="btn btn-sm btn-outline-secondary" data-range="1y">1y</button>
         </div>
       </div>
+
       <div class="card-body">
         <div class="row g-3 mb-3">
           <div class="col-12 col-md-8">
             <canvas id="salesChart" height="120"></canvas>
           </div>
+
           <div class="col-12 col-md-4">
             <ul class="list-group list-group-flush">
               <li class="list-group-item d-flex justify-content-between">
@@ -128,15 +131,18 @@
               <span class="text-secondary">Composite without BOM</span>
               <span class="fw-semibold {{ $compositeWithoutBom ? 'text-danger' : 'text-dark' }}">{{ $compositeWithoutBom }}</span>
             </div>
+
             <div class="list-group-item d-flex justify-content-between align-items-center">
               <span class="text-secondary">Simple with inactive Item</span>
               <span class="fw-semibold {{ $simpleWithInactiveItem ? 'text-warning' : 'text-dark' }}">{{ $simpleWithInactiveItem }}</span>
             </div>
+
             <div class="list-group-item d-flex justify-content-between align-items-center">
               <span class="text-secondary">Products missing cost data</span>
               <span class="fw-semibold {{ $productsNeedingCostData ? 'text-warning' : 'text-dark' }}">{{ $productsNeedingCostData }}</span>
             </div>
           </div>
+
           <div class="card-footer bg-body-tertiary text-end">
             <a href="{{ route('admin.products.index') }}" class="link-primary">Go to Products</a>
           </div>
@@ -153,6 +159,7 @@
             </div>
             <a href="{{ route('admin.items.index',['low'=>1]) }}" class="link-primary">View all</a>
           </div>
+
           <div class="table-responsive" style="max-height: 420px;">
             <table class="table table-sm align-middle table-sticky mb-0">
               <thead>
@@ -163,6 +170,7 @@
                   <th scope="col" class="text-end"></th>
                 </tr>
               </thead>
+
               <tbody class="table-group-divider">
                 @forelse($lowStockItems as $it)
                   <tr class="">
@@ -209,7 +217,6 @@
           </div>
         </section>
       </div>
-
     </div>
 
     {{-- Near Expiry Lots --}}
@@ -223,6 +230,7 @@
             $border = ['danger'=>'border-danger-subtle','warn'=>'border-warning-subtle','caution'=>'border-warning-subtle'][$toneKey];
             $badge  = ['danger'=>'bg-danger-subtle text-danger-emphasis','warn'=>'bg-warning-subtle text-warning-emphasis','caution'=>'bg-warning-subtle text-warning-emphasis'][$toneKey];
           @endphp
+
           <div class="list-group-item d-flex justify-content-between align-items-center border-start border-4 {{ $border }}">
             <div>
               <div class="fw-medium">{{ $lot->item->name }}</div>
@@ -231,6 +239,7 @@
                 <span class="badge rounded-pill {{ $badge }} ms-2">{{ $daysLeft }}d left</span>
               </div>
             </div>
+
             <div class="font-monospace">
               {{ rtrim(rtrim(number_format($lot->qty,3,'.',''), '0'), '.') }} {{ $lot->item->base_unit }}
             </div>
@@ -247,6 +256,7 @@
         <strong>Products Snapshot</strong>
         <a href="{{ route('admin.products.index') }}" class="link-primary">View all</a>
       </div>
+
       <div class="table-responsive">
         <table class="table table-sm align-middle mb-0">
           <thead class="table-light text-secondary text-uppercase small">
@@ -260,6 +270,7 @@
               <th></th>
             </tr>
           </thead>
+
           <tbody class="table-group-divider">
             @forelse($sample as $p)
               <tr>
@@ -275,10 +286,12 @@
                     <span class="badge bg-warning-subtle text-warning-emphasis ms-2">Missing Cost</span>
                   @endif
                 </td>
+
                 <td class="text-capitalize">{{ $p['type'] }}</td>
                 <td class="text-end">Rp {{ number_format($p['price'],2,',','.') }}</td>
                 <td class="text-end">Rp {{ number_format($p['cost'],2,',','.') }}</td>
                 <td class="text-end {{ $p['margin'] < 0 ? 'text-danger' : '' }}">Rp {{ number_format($p['margin'],2,',','.') }}</td>
+                
                 <td class="text-center">
                   @if($p['is_active'])
                     <span class="badge bg-success-subtle text-success-emphasis">Active</span>
@@ -286,6 +299,7 @@
                     <span class="badge bg-secondary-subtle text-secondary-emphasis">Inactive</span>
                   @endif
                 </td>
+                
                 <td class="text-end">
                   <a class="btn btn-outline-secondary btn-sm rounded-3" href="{{ route('admin.products.edit',$p['id']) }}">Edit</a>
                 </td>
