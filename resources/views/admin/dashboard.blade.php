@@ -7,16 +7,53 @@
   .card-quiet { border: 1px solid rgba(15,23,42,.08); box-shadow: 0 1px 2px rgba(15,23,42,.04); }
   .icon-chip { width: 40px; height: 40px; display:flex; align-items:center; justify-content:center; border-radius:12px; background:#f8f9fa; border:1px solid rgba(0,0,0,.06); }
   .table-sticky thead th { position: sticky; top: 0; background: #f8f9fa; z-index: 2; }
+
+  /* Dark Mode */
+  .dark .dash-backdrop { background: none; }
+
+  .dark .card-quiet, .dark .card { 
+      background-color: #1f2937;
+      border-color: #374151; 
+      color: #f3f4f6;
+      box-shadow: none;
+  }
+
+  .dark .card-header {
+      background-color: #111827;
+      border-bottom-color: #374151;
+      color: black; /*tulisan di header*/
+  }
+
+  .dark .list-group-item {
+      background-color: #1f2937;  
+      border-color: #374151;
+      color: #d1d5db; /*tulisan hitungan dalam dashboard*/
+  }
+
+  .dark .icon-chip {
+      background-color: #374151;
+      border-color: #4b5563;
+  }
+
+  .dark .table-sticky thead th, 
+  .dark .table thead th { 
+      background-color: #111827; 
+      color: #d1d5db; 
+      border-bottom-color: #374151;
+  }
+  
+  .dark .table { --bs-table-bg: transparent; --bs-table-color: #d1d5db; --bs-table-border-color: #374151; }
+  .dark .table-hover tbody tr:hover { color: #fff; background-color: rgba(255,255,255,0.05); }
 </style>
 
 <div class="dash-backdrop">
-  <div class="container-xxl py-4 py-md-5">
+  <div class="container-xxl py-4 py-md-5 dark:bg-gray-900 dark:text-white">
 
     {{-- Header Bar --}}
     <div class="d-flex align-items-start justify-content-between mb-4">
       <div>
-        <h1 class="h3 h2-md fw-bold mb-1 text-dark">Admin Dashboard</h1>
-        <div class="text-secondary">Welcome back, {{ auth()->user()->name }} 👑</div>
+        <h1 class="h3 fw-bold text-gray-800 dark:text-white">Admin Dashboard</h1>
+        <div class="text-secondary"> <p class="dark:text-gray-300">Welcome back, {{ auth()->user()->name }} 👑</p></div>
       </div>
 
       <div class="d-flex gap-2">
@@ -36,7 +73,6 @@
         ['label'=>'Simple / Composite','value'=>"$simpleCount / $compositeCount",'small'=>true,'icon'=>'grid'],
       ];
     @endphp
-
 
     <section class="card card-quiet rounded-4 overflow-hidden my-4">
       <div class="card-header bg-body-tertiary d-flex align-items-center justify-content-between flex-wrap gap-2">
@@ -175,7 +211,7 @@
                 @forelse($lowStockItems as $it)
                   <tr class="">
                     <td>
-                      <a class="link-primary" href="{{ route('admin.items.show',$it->id) }}">{{ $it->name }}</a>
+                      <a class="link-primary dark:text-primary dark:hover:text-primary-focus transition-colors" href="{{ route('admin.items.show',$it->id) }}">{{ $it->name }}</a>
                     </td>
                     <td class="text-end">
                       {{ rtrim(rtrim(number_format($it->current_qty,3,'.',''), '0'), '.') }} {{ $it->base_unit }}
@@ -275,7 +311,7 @@
             @forelse($sample as $p)
               <tr>
                 <td>
-                  <a class="link-primary" href="{{ route('admin.products.show',$p['id']) }}">{{ $p['name'] }}</a>
+                  <a class="text-blue-600 dark:text-gray-300 dark:hover:text-gray-700" href="{{ route('admin.products.show',$p['id']) }}">{{ $p['name'] }}</a>
                   @if($p['needs_bom'])
                     <span class="badge bg-danger-subtle text-danger-emphasis ms-2">No BOM</span>
                   @endif

@@ -37,6 +37,7 @@
             <th class="text-end"></th>
           </tr>
         </thead>
+
         <tbody class="table-group-divider">
           @forelse($sales as $s)
             <tr>
@@ -44,6 +45,7 @@
               <td class="font-monospace">{{ $s->invoice_no }}</td>
               <td>{{ $s->user->name ?? '—' }}</td>
               <td class="text-end">Rp {{ number_format($s->total,0,',','.') }}</td>
+              
               <td class="text-center">
                 @php
                   $badge = match($s->status){
@@ -55,6 +57,7 @@
                 @endphp
                 <span class="badge {{ $badge }}">{{ ucfirst($s->status) }}</span>
               </td>
+
               <td class="text-end">
                 <a class="btn btn-sm btn-outline-primary" href="{{ route('employee.sales.invoice.show', $s) }}">Invoice</a>
               </td>
