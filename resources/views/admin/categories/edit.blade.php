@@ -58,8 +58,8 @@
 
                 <div class="flex items-center justify-end space-x-3 pt-4 border-t dark:border-gray-700">
                     <a href="{{ route('admin.categories.index') }}" class="px-4 py-2 rounded-lg text-sm font-medium transition duration-200
-                        bg-gray-700 text-gray-400 hover:bg-gray-600
-                        dark:bg-gray-300 dark:text-gray-800 dark:hover:bg-gray-400">
+                        bg-gray-700 text-gray-800 hover:bg-gray-600
+                        dark:bg-gray-300 dark:text-gray-400 dark:hover:bg-gray-400">
                         {{ __('Cancel') }}
                     </a>
                     <button class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-medium shadow-md transition duration-200">
