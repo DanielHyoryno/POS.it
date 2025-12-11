@@ -21,9 +21,9 @@
     <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
         
         @if(Auth::check() && Auth::user()->role === 'admin')
-        @include('layouts.partials.admin_navbar')
+            @include('layouts.partials.admin_navbar')
         @else
-         @include('layouts.partials.employee_navbar')
+            @include('layouts.partials.employee_navbar')
         @endif
 
         {{-- Page Heading --}}
