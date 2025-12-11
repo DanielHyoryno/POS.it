@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="max-w-md mx-auto mt-8 px-4">
-    <div class="bg-gray-900 text-white dark:bg-gray-100 dark:text-gray-900 shadow-xl rounded-xl border border-gray-700 dark:border-gray-300 overflow-hidden">
+    <div class="bg-gray-900 text-white dark:bg-gray-100 dark:text-gray-900 shadow-xl rounded-lg border border-gray-700 dark:border-gray-300 overflow-hidden">
         
         <div class="p-6 space-y-6">
             <h1 class="text-2xl font-bold text-gray-800 dark:text-white dark:border-gray-300 border-b pb-4 mb-4">
@@ -39,7 +39,7 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-white mb-1">{{ __('Sort Order') }}</label>
+                    <label class="block mt-3 text-sm font-medium text-gray-700 dark:text-white mb-1">{{ __('Sort Order') }}</label>
                     <input name="sort_order" type="number" class="w-full rounded-lg shadow-sm p-2 border transition duration-200
                         bg-gray-200 border-gray-600 text-dark focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50
                         dark:bg-white dark:border-gray-300 dark:text-gray-900" 
@@ -47,7 +47,7 @@
                         value="{{ old('sort_order', $category->sort_order) }}">
                 </div>
 
-                <div class="flex items-center">
+                <div class="flex mt-3 mb-3 items-center">
                     <input type="checkbox" name="is_active" id="is_active" value="1" 
                         class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                         @checked(old('is_active', $category->is_active))>
@@ -59,7 +59,7 @@
                 <div class="flex items-center justify-end space-x-3 pt-4 border-t dark:border-gray-700">
                     <a href="{{ route('admin.categories.index') }}" class="px-4 py-2 rounded-lg text-sm font-medium transition duration-200
                         bg-gray-700 text-gray-800 hover:bg-gray-600
-                        dark:bg-gray-300 dark:text-gray-400 dark:hover:bg-gray-400">
+                        dark:bg-gray-300 dark:text-gray-200 dark:hover:bg-gray-400">
                         {{ __('Cancel') }}
                     </a>
                     <button class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-medium shadow-md transition duration-200">
